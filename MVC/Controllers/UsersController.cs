@@ -107,7 +107,7 @@ namespace MVC.Controllers
                     TempData["Message"] = result.Message;
                     return RedirectToAction(nameof(Details), new { id = user.Record.Id });
                 }
-                ModelState.AddModelError("", result.Message);
+                ModelState.AddModelError("Model can not be founded!", result.Message);
             }
             SetViewData();
             return View(user);
