@@ -6,7 +6,7 @@ namespace BLL.DAL
     {
         public int Id { get; set; }
         [Required]
-        [StringLength(70)]
+        [StringLength(20)]
         public string UserName { get; set; }
         [Required]
         [StringLength(12)]

@@ -43,7 +43,7 @@ namespace BLL.Services
             if (!result.IsSuccessful)
                 return result;
 
-            _db.Users.Remove(entity);
+            //_db.Users.Remove(entity); We changed activeness status to false, so we do not need this line.
             _db.SaveChanges();
             return Success($"User with \"{entity.UserName}\" deleted successfully.");
 
