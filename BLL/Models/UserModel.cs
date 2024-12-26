@@ -6,10 +6,11 @@ namespace BLL.Models
     public class UserModel
     {
         public User Record { get; set; }
+
         [DisplayName("User Name")]
         public string UserName => Record.UserName;
 
-        [DisplayName("Passwd")]
+        [DisplayName("Password")]
         public string Password => Record.Password;
 
         [DisplayName("is Active?")]

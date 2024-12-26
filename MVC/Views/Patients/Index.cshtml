@@ -1,4 +1,4 @@
-﻿@model IEnumerable<UserModel>
+﻿@model IEnumerable<PatientModel>
 
 @* Generated from Custom Template. *@
 @* Model namespace using directive should be added to _ViewImports.cshtml. *@
@@ -7,7 +7,7 @@
     var containerDivClass = "container";
 }
 @{
-    ViewData["Title"] = "User List";
+    ViewData["Title"] = "Patient List";
 }
 
 <div class="@containerDivClass">
@@ -28,10 +28,9 @@
                 <div class="col-10 text-success">
                     @Model.Count() record(s) found.
                 </div>
-                @if (User.IsInRole("Admin"))
-                {
-                    <div class="col-2 text-end">
-                        <a asp-action="Create">Create</a>
+                @if (User.IsInRole("Admin")){
+                <div class="col-2 text-end">
+                    <a asp-action="Create">Create</a>
                 </div>
                 }
             </div>
@@ -39,16 +38,22 @@
                 <thead class="table-secondary">
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.UserName)
-                        </th>
-                       @*  <th>
-                            @Html.DisplayNameFor(model => model.Password)
-                        </th> *@
-                        <th>
-                            @Html.DisplayNameFor(model => model.isActive)
+                            @Html.DisplayNameFor(model => model.Name)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Role)
+                            @Html.DisplayNameFor(model => model.Surname)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.IsFemale)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.BirthDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Height)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Weight)
                         </th>
                         <th></th>
                     </tr>
@@ -57,27 +62,29 @@
 		            @foreach (var item in Model) {
 				        <tr>
 					        <td>
-						        @Html.DisplayFor(modelItem => item.UserName)
-					        </td>
-					        @* <td>
-						        @Html.DisplayFor(modelItem => item.Password)
-					        </td> *@
-					        <td>
-						        @Html.DisplayFor(modelItem => item.isActive)
+						        @Html.DisplayFor(modelItem => item.Name)
 					        </td>
 					        <td>
-						        @Html.DisplayFor(modelItem => item.Role)
+						        @Html.DisplayFor(modelItem => item.Surname)
 					        </td>
-                             @if (User.IsInRole("Admin"))
+					        <td>
+						        @Html.DisplayFor(modelItem => item.IsFemale)
+					        </td>
+					        <td>
+						        @Html.DisplayFor(modelItem => item.BirthDate)
+					        </td>
+					        <td>
+						        @Html.DisplayFor(modelItem => item.Height)
+					        </td>
+					        <td>
+						        @Html.DisplayFor(modelItem => item.Weight)
+					        </td>
+                            @if (User.IsInRole("Admin"))
                             {
                                 <td class="text-end w-25">
-
-                                    <a asp-action="Details" asp-route-id="@item.Record.Id">Details</a>
-                                    &nbsp;| &nbsp;
-                                    <a asp-action="Edit" asp-route-id="@item.Record.Id">Edit</a>
-                                    &nbsp;| &nbsp;
+                                    <a asp-action="Details" asp-route-id="@item.Record.Id">Details</a>&nbsp;|&nbsp;
+                                    <a asp-action="Edit" asp-route-id="@item.Record.Id">Edit</a>&nbsp;|&nbsp;
                                     <a asp-action="Delete" asp-route-id="@item.Record.Id">Delete</a>
-
                                 </td>
                             }
                         </tr>

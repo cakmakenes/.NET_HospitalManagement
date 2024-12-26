@@ -3,130 +3,138 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BLL.Controllers.Bases;
 using BLL.Services;
 using BLL.Models;
+using BLL.DAL;
+using BLL.Services.Bases;
 using Microsoft.AspNetCore.Authorization;
 
 // Generated from Custom Template.
 
 namespace MVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class RolesController : MvcController
+    [Authorize]
+    public class PatientsController : MvcController
     {
         // Service injections:
-        private readonly IRoleService _roleService;
+        private readonly IService<Patient, PatientModel> _patientService;
 
-        /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-        //private readonly IManyToManyRecordService _ManyToManyRecordService;
+        /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entity name in the controller and views. */
+        private readonly IService<Doctor,DoctorModel> _doctorService;
 
-        public RolesController(
-			IRoleService roleService
+        public PatientsController(
+            IService<Patient, PatientModel> patientService
 
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-            //, IManyToManyRecordService ManyToManyRecordService
+            , IService<Doctor, DoctorModel> doctorService
+
         )
         {
-            _roleService = roleService;
+            _patientService = patientService;
 
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-            //_ManyToManyRecordService = ManyToManyRecordService;
+            _doctorService = doctorService;
         }
 
-        // GET: Roles
-
+        // GET: Patients
+        [AllowAnonymous]
         public IActionResult Index()
         {
             // Get collection service logic:
-            var list = _roleService.Query().ToList();
+            var list = _patientService.Query().ToList();
             return View(list);
         }
 
-        // GET: Roles/Details/5
+        // GET: Patients/Details/5
         public IActionResult Details(int id)
         {
             // Get item service logic:
-            var item = _roleService.Query().SingleOrDefault(q => q.Record.Id == id);
+            var item = _patientService.Query().SingleOrDefault(q => q.Record.Id == id);
             return View(item);
         }
 
         protected void SetViewData()
         {
             // Related items service logic to set ViewData (Record.Id and Name parameters may need to be changed in the SelectList constructor according to the model):
-            
+
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-            //ViewBag.ManyToManyRecordIds = new MultiSelectList(_ManyToManyRecordService.Query().ToList(), "Record.Id", "Name");
+            ViewBag.DoctorIds = new MultiSelectList(_doctorService.Query().ToList(), "Record.Id", "NameAndSurname");
         }
 
-        // GET: Roles/Create
+        // GET: Patients/Create
+        [Authorize(Roles ="Admin")]
         public IActionResult Create()
         {
             SetViewData();
             return View();
         }
 
-        // POST: Roles/Create
+        // POST: Patients/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(RoleModel role)
+        [Authorize(Roles = "Admin")]
+
+        public IActionResult Create(PatientModel patient)
         {
             if (ModelState.IsValid)
             {
                 // Insert item service logic:
-                var result = _roleService.Create(role.Record);
+                var result = _patientService.Create(patient.Record);
                 if (result.IsSuccessful)
                 {
                     TempData["Message"] = result.Message;
-                    return RedirectToAction(nameof(Details), new { id = role.Record.Id });
+                    return RedirectToAction(nameof(Details), new { id = patient.Record.Id });
                 }
                 ModelState.AddModelError("", result.Message);
             }
             SetViewData();
-            return View(role);
+            return View(patient);
         }
 
-        // GET: Roles/Edit/5
+        // GET: Patients/Edit/5
         public IActionResult Edit(int id)
         {
             // Get item to edit service logic:
-            var item = _roleService.Query().SingleOrDefault(q => q.Record.Id == id);
+            var item = _patientService.Query().SingleOrDefault(q => q.Record.Id == id);
             SetViewData();
             return View(item);
         }
 
-        // POST: Roles/Edit
+        // POST: Patients/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(RoleModel role)
+        [Authorize(Roles = "Admin")]
+        public IActionResult Edit(PatientModel patient)
         {
             if (ModelState.IsValid)
             {
                 // Update item service logic:
-                var result = _roleService.Update(role.Record);
+                var result = _patientService.Update(patient.Record);
                 if (result.IsSuccessful)
                 {
                     TempData["Message"] = result.Message;
-                    return RedirectToAction(nameof(Details), new { id = role.Record.Id });
+                    return RedirectToAction(nameof(Details), new { id = patient.Record.Id });
                 }
                 ModelState.AddModelError("", result.Message);
             }
             SetViewData();
-            return View(role);
+            return View(patient);
         }
 
-        // GET: Roles/Delete/5
+        // GET: Patients/Delete/5
         public IActionResult Delete(int id)
         {
             // Get item to delete service logic:
-            var item = _roleService.Query().SingleOrDefault(q => q.Record.Id == id);
+            var item = _patientService.Query().SingleOrDefault(q => q.Record.Id == id);
             return View(item);
         }
 
-        // POST: Roles/Delete
+        [Authorize(Roles = "Admin")]
+        // POST: Patients/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             // Delete item service logic:
-            var result = _roleService.Delete(id);
+            var result = _patientService.Delete(id);
             TempData["Message"] = result.Message;
             return RedirectToAction(nameof(Index));
         }

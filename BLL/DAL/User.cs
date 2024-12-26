@@ -5,11 +5,11 @@ namespace BLL.DAL
     public class User
     {
         public int Id { get; set; }
-        [Required]
-        [StringLength(20)]
+        [Required(ErrorMessage = "User name is required!")]
+        [StringLength(20, ErrorMessage ="User name must be maximum {1} characters!")]
         public string UserName { get; set; }
-        [Required]
-        [StringLength(12)]
+        [Required(ErrorMessage = "Password is required!")]
+        [StringLength(12, ErrorMessage = "{0} must be maximum {1} characters!")]
         public string Password { get; set; }
 
         public bool isActive { get; set; }

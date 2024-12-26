@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BLL.Controllers.Bases;
 using BLL.Services;
 using BLL.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 // Generated from Custom Template.
 
@@ -31,6 +35,49 @@ namespace MVC.Controllers
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
             //_ManyToManyRecordService = ManyToManyRecordService;
         }
+
+        //Login 
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost,ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserModel user)
+        {
+            if (ModelState.IsValid)
+            {
+               var userModel = _userService.Query().SingleOrDefault(u => u.Record.UserName == user.Record.UserName && u.Record.Password == user.Record.Password && u.Record.isActive);
+                if (userModel is not null)
+                {
+                    List<Claim> claims = new List<Claim>()
+                    { 
+                        new Claim(ClaimTypes.Name, userModel.UserName),
+                        new Claim(ClaimTypes.Role, userModel.Role),
+                        new Claim("Id", userModel.Record.Id.ToString())
+                    };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+                    await HttpContext.SignInAsync(principal, new AuthenticationProperties()
+                    {
+                        IsPersistent = true
+                    });
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+                
+
+            return View();
+        }
+
+
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Login");
+        }
+
 
         // GET: Users
         public IActionResult Index()
