@@ -24,6 +24,9 @@ builder.Services.AddScoped<IService<Doctor,DoctorModel>, DoctorService>();
 //builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IService<Branch, BranchModel>, BranchService>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<HttpServiceBase, HttpService>();
+
 
 //Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -34,6 +37,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
         options.SlidingExpiration = true;
     });
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+});
 
 var app = builder.Build();
 
@@ -55,6 +63,8 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+//Session
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

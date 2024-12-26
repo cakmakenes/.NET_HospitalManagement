@@ -60,10 +60,14 @@
 						        @Html.DisplayFor(modelItem => item.Branch)
 					        </td>
 					        <td class="text-end w-25">
-						        <a asp-action="Details" asp-route-id="@item.Record.Id">Details</a>&nbsp;|&nbsp;
-						        <a asp-action="Edit" asp-route-id="@item.Record.Id">Edit</a>&nbsp;|&nbsp;
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <a asp-action="Add" asp-controller="Favorites" asp-route-doctorId="@item.Record.Id">Add to favorites</a>
+						        <a asp-action="Details" asp-route-id="@item.Record.Id">Details</a>@:&nbsp;|&nbsp;
+						        <a asp-action="Edit" asp-route-id="@item.Record.Id">Edit</a>@:&nbsp;|&nbsp;
 						        <a asp-action="Delete" asp-route-id="@item.Record.Id">Delete</a>
-					        </td>
+                                }
+                            </td>
 				        </tr>
 		            }
                 </tbody>

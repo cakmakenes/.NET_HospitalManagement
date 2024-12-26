@@ -38,12 +38,6 @@ namespace BLL.Services
             var entity = _db.Users.SingleOrDefault(u => u.Id == id);
             entity.isActive = false;
             var result = Update(entity);
-
-
-            if (!result.IsSuccessful)
-                return result;
-
-            //_db.Users.Remove(entity); We changed activeness status to false, so we do not need this line.
             _db.SaveChanges();
             return Success($"User with \"{entity.UserName}\" deleted successfully.");
 
